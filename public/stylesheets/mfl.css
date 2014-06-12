@@ -638,3 +638,7 @@ html, body {
   0% { -webkit-transform: rotateZ(-10deg); }
   100% { -webkit-transform: rotateZ(10deg); }
 }
+@keyframes winnerAnimation {
+  0% { -webkit-transform: rotateZ(-10deg); }
+  100% { -webkit-transform: rotateZ(10deg); }
+}
