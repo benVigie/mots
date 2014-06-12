@@ -136,6 +136,8 @@ require(['../lib/text!../../conf.json', 'UITools', 'grid', 'chat', 'score'], fun
       // Bind score update
       _socket.on('score_update', _scoreManager.RefreshScore);
     
+      // Finally bind game over event
+      _socket.on('game_over', _ui.displayGameOver);
     });
 
     // Send player infos to the server

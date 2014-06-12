@@ -516,6 +516,8 @@ html, body {
 
   background: url('../images/pink-bg.png');
   -webkit-transition: top 300ms ease-in;
+  -moz-transition: top 300ms ease-in;
+  transition: top 300ms ease-in;
 }
 #info-tooltip strong {
   color: #e74c3c;
@@ -536,12 +538,24 @@ html, body {
   text-align: center;
 
   background-image: url('../images/green-bg.png');
+  overflow: hidden;
 }
 #ig-infos > header {
+  position: relative;
   height: 50%;
+  
   font-size: 1.3em;
   line-height: 75px;
+
+  -webkit-transition: top 0.8s ease, height 0.8s ease;
+  -moz-transition: top 0.8s ease, height 0.8s ease;
+  transition: top 0.8s ease, height 0.8s ease;
 }
+#ig-infos > header.game-over {
+  top: -5%;
+  height: 30%;
+}
+
 #ig-infos > time {
   font-size: 2em;
   font-weight: bold;
@@ -552,6 +566,34 @@ html, body {
 }
 
 
+#ig-infos > footer {
+  position: absolute;
+  bottom: 0;
+
+  width: 100%;
+}
+
+/* Winner */
+#winner-pic {
+  display: inline-block;
+  margin-bottom: -100px;
+  
+  width: 80px;
+  
+  border-radius: 50%;
+  
+  -moz-box-shadow: 0px 2px 10px 0px rgba(127, 140, 141, 0.5);
+  box-shadow: 0px 2px 10px 0px rgba(127, 140, 141, 0.5);
+
+  -webkit-animation: winnerAnimation 500ms ease infinite alternate;
+  animation: winnerAnimation 500ms ease infinite alternate;
+
+  -webkit-transition: margin-bottom 400ms ease;
+  -moz-transition: margin-bottom 400ms ease;
+  transition: margin-bottom 400ms ease;
+}
+#winner-pic.winner-pic-reveal { margin-bottom: 10px; }
+
 
 
 /*==============*\
@@ -559,6 +601,7 @@ html, body {
 |   ANIMATIONS   |
 |                |
 \*==============*/
+/* Bonus animation */
 @-webkit-keyframes onBonusDisplay {
   0% {
     bottom: 70px;
@@ -588,4 +631,10 @@ html, body {
     font-size: 1.05em;
     opacity: 0;
   }
+}
+
+/* Winner animation */
+@-webkit-keyframes winnerAnimation {
+  0% { -webkit-transform: rotateZ(-10deg); }
+  100% { -webkit-transform: rotateZ(10deg); }
 }
