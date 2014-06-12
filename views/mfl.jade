@@ -1,0 +1,60 @@
+doctype html
+html
+  head
+    script(type='text/javascript', src=wsAddress + '/socket.io/socket.io.js').
+    
+    <link href="/images/favicon.ico" rel="icon" type="image/ico" />
+    <meta charset='utf-8'>
+    <title>MotsFleches.js</title>
+
+    <link href="stylesheets/mfl.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <script data-main="javascripts/game/mflEngine" src="javascripts/lib/require.min.js"></script>
+
+  body.
+
+    <!-- Loading page -->
+    <div id="loading-panel" class='ui ui-displayed'>
+      
+    </div>
+
+    <!-- Login page -->
+    <div id="login-panel" class='ui'>
+      <header>
+        <div class="lp-case lp-title">M</div><div class="lp-case lp-title">O</div><div class="lp-case lp-title">T</div><div class="lp-case lp-title">S</div><div class="lp-case lp-title">.</div><div class="lp-case lp-title">J</div><div class="lp-case lp-title">S</div>
+      </header>
+
+      <section id="lp-infos">
+        <label>Votre pseudo ></label>
+        <input type="text" id="lp-nick" value="">
+
+        <div id="lp-logos"></div>
+
+        <input type="button" id="lp-start-btn" value="Jouer">
+      </section>
+
+    </div>
+
+
+    <!-- Game screen -->
+    <div id="game-panel" class='ui'>
+
+      <section id="gs-chat">
+        <div id="gsc-messages"></div>
+        <textarea id="gsc-write" placeholder="Votre message"></textarea>
+      </section>
+
+      <section id="gs-grid-container"></section>
+      
+      <section id="gs-scores"></section>
+
+    </div>
+
+    <!-- Error screen -->
+    <div id="error-panel" class='ui'>
+      <h1 id="ep-title">Ooooops !</h1>
+      <img src="images/oups.png">
+      <strong id="ep-text">Something goes wrong</strong>
+    </div>
+
+    <div id="info-tooltip"></div>
