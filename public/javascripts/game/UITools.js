@@ -155,11 +155,25 @@ define(function () {
   };
 
   /*
-  * On game over, call this function to stop the game timer
+  * On game over, call this function to display the end game !
+  * @param {Object}  winner  PLayer object of the winner of the game
   */
-  UITools.prototype.stopGameTimer = function () {
+  UITools.prototype.displayGameOver = function (winner) {
+    var gamePanel = document.querySelector('#ig-infos > footer');
+
+    console.log(winner);
+    // First stop the timer
     if (_gameTimer != null)
       window.clearInterval(_gameTimer);
+
+    // Set game over class
+    document.querySelector('#ig-infos > header').classList.add('game-over');
+    
+    // Put winner picture
+    gamePanel.innerHTML += '<img id="winner-pic" src="' + winner.monster.path + '" alt="winner picture" />';
+    window.setTimeout(function() {
+      document.getElementById('winner-pic').classList.add('winner-pic-reveal');
+    }, 200);
   };
 
   return (UITools);

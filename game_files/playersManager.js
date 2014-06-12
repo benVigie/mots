@@ -37,7 +37,7 @@ PlayersManager.prototype.removePlayer = function (player) {
     _playersList.splice(pos, 1);
     console.info('It remains ' + _playersList.length + ' player(s)');
   }
-}
+};
 
 PlayersManager.prototype.getPlayerList = function () {
   var players = [],
@@ -49,7 +49,7 @@ PlayersManager.prototype.getPlayerList = function () {
   };
 
   return (players);
-}
+};
 
 PlayersManager.prototype.getNumberOfPlayers = function () {
   return (_playersList.length);
@@ -66,7 +66,7 @@ PlayersManager.prototype.getAvailableMonsters = function () {
   };
 
   return (availableMonsters);
-}
+};
 
 PlayersManager.prototype.setMonsterToPlayer = function (player, monsterId) {
   if ((monsterId > (Monsters.length - 1)) || (Monsters[monsterId].player != null)) {
@@ -81,7 +81,24 @@ PlayersManager.prototype.setMonsterToPlayer = function (player, monsterId) {
   // Set monster to this player
   player.setMonster(Monsters[monsterId]);
   Monsters[monsterId].player = player.getID();
-}
+};
+
+PlayersManager.prototype.getWinner = function () {
+  var i,
+      bestScore = 0,
+      winnerIndex;
+
+  // Look in all players which one has the bigger score
+  for (i in _playersList) {
+    if (_playersList[i].getScore() > bestScore) {
+      bestScore = _playersList[i].getScore();
+      winnerIndex = i;
+    }
+  };
+
+  // Return the high score player
+  return (_playersList[winnerIndex]);
+};
 
 
 

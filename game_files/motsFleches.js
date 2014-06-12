@@ -72,7 +72,7 @@ function bonusChecker(playerPoints, nbWordsRemaining) {
     bonus.points += 5;
   }
 
-  // If it's a big word, add 3 poits
+  // If it's a big word, add 3 points
   if (playerPoints >= 6) {
     bonus.bonusList.push( { title: 'Gros mot !', points: 3 } );
     bonus.points += 3;
@@ -104,6 +104,9 @@ function checkWord(player, wordObj) {
     // Update player score and notify clients
     player.updateScore(points + bonuses.points);
     _io.sockets.emit('score_update', { playerID: player.getID(), score: player.getScore(), words: player.getNbWords(), progress: _gridManager.getAccomplishmentRate(player.getScore()), bonus: bonuses.bonusList } );
+
+    if (_gridManager.getGrid().nbWords <= 0)
+      _io.sockets.emit('game_over', _playersManager.getWinner().getPlayerObject());
   }
 }
 
