@@ -109,7 +109,7 @@ require(['../lib/text!../../conf.json', 'UITools', 'grid', 'chat', 'score'], fun
 
     // If nick is empty or if it has the default value, 
     if ((nick == '') || (monsterNode == null)) {
-      _ui.InfoTooltip(true, 'Vous devez choisir un <strong>pseudo</strong> et un <strong>monstre</strong> !', 4000);
+      _ui.InfoTooltip(true, 'Vous devez choisir un <strong>pseudo</strong> et un <strong> petit monstre</strong> !', 4000);
       return (false);
     }
     
