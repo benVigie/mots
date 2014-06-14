@@ -99,9 +99,14 @@ require(['../lib/text!../../conf.json', 'UITools', 'grid', 'chat', 'score'], fun
       logosNodes[i].onclick = function (event) {
         var oldSelection = document.querySelector('.myMonster');
 
+        // Unset last selection if any and set the new monster
         if (oldSelection)
           oldSelection.classList.remove('myMonster');
-          event.srcElement.classList.add('myMonster');
+        event.srcElement.classList.add('myMonster');
+
+        // Show the color !
+        document.getElementById('lp-nick').style.borderColor = event.srcElement.style.borderColor;
+        document.getElementById('lp-start-btn').style.borderColor = event.srcElement.style.borderColor;
       }
     };
   }
