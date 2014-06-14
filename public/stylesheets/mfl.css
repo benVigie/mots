@@ -220,6 +220,7 @@ html, body {
 #gsc-messages article > strong {
   display: block;
 }
+.server-message { font-family: 'abeezeeitalic'; }
 
 #gsc-write {
   position: absolute;
@@ -231,8 +232,13 @@ html, body {
   height: 60px;
 
   color: #ecf0f1;
+  font-family: 'abeezeeitalic';
   background-color: rgba(149, 165, 166, 0.6);
 }
+::-webkit-input-placeholder { color: rgba(236, 240, 241, 0.5); }
+::-moz-placeholder { color: rgba(236, 240, 241, 0.5); }
+:-moz-placeholder { color: rgba(236, 240, 241, 0.5); }
+
 
 /* Game grid part */
 #gs-grid-container {
@@ -423,8 +429,8 @@ html, body {
 .bloc4 { width: 25%; }
 
 .bloc1 > .score-bar, .bloc2 > .score-bar { width: 50%; left: 25%; }
-.bloc3 > .score-bar { width: 66%; }
-.bloc4 > .score-bar { width: 90%; }
+.bloc3 > .score-bar { width: 66%; left: 17%; }
+.bloc4 > .score-bar { width: 90%; left: 5%; }
 
 
 .score-bar {
@@ -467,6 +473,9 @@ html, body {
 
 .playerScore > footer > h3 {
   font-size: 1.1em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
 }
 .playerScore > footer > strong {
   display: block;

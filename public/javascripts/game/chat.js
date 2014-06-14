@@ -61,6 +61,20 @@ define(function () {
   }
 
 
+  /*
+  * Print a congrats message in chat !
+  * @param {Object}  winner  PLayer object of the winner of the game
+  */
+  Chat.prototype.congrats = function (winner) {
+    var box = document.createElement('article');
+
+    // Create message
+    box.innerHTML = 'Partie terminée.<br/>Félicitations à <strong style="color: ' + winner.monster.color + ';">' + winner.nick + '</strong> pour sa victoire !';
+    
+    // Add message in panel and scroll to the bottom
+    _mesNode.appendChild(box);
+    _mesNode.scrollTop = _mesNode.scrollHeight;
+  };
 
   return (Chat);
 

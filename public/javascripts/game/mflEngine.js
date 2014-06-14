@@ -19,6 +19,7 @@ require(['../lib/text!../../conf.json', 'UITools', 'grid', 'chat', 'score'], fun
       _gridManager,
       _scoreManager,
       _ui,
+      _chat,
       _socket,
       _grid;
 
@@ -119,7 +120,7 @@ require(['../lib/text!../../conf.json', 'UITools', 'grid', 'chat', 'score'], fun
     document.getElementById('lp-start-btn').onclick = function() { return false; };
 
     // Connect chat
-    new Chat(_socket, _scoreManager.UpdatePlayerList);
+    _chat = new Chat(_socket, _scoreManager.UpdatePlayerList);
 
     _socket.on('grid_event', function (gridEvent) {
 
@@ -137,7 +138,10 @@ require(['../lib/text!../../conf.json', 'UITools', 'grid', 'chat', 'score'], fun
       _socket.on('score_update', _scoreManager.RefreshScore);
     
       // Finally bind game over event
-      _socket.on('game_over', _ui.displayGameOver);
+      _socket.on('game_over', function (winner) {
+        _ui.displayGameOver(winner);
+        _chat.congrats(winner);
+      });
     });
 
     // Send player infos to the server
