@@ -45,8 +45,11 @@ require(['../lib/text!../../conf.json', 'UITools', 'grid', 'chat', 'score'], fun
       console.log('Connection established :)');
       
       // Bind server disconnect event
-      _socket.on('disconnect', function() {
-        document.getElementById('ep-text').innerHTML = 'Connection with the server lost';
+      _socket.on('disconnect', function (reason) {
+        if (reason && reason == 'booted')
+          document.getElementById('ep-text').innerHTML = 'Désolé, la partie a déjà commencée !';
+        else
+          document.getElementById('ep-text').innerHTML = 'Connection au serveur perdue';
         _ui.ChangeGameScreen(enumPanels.Error, true);
         console.log('Connection with the server lost :( ');
       });

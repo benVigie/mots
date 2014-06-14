@@ -116,10 +116,6 @@ define(['cursor'], function (Cursor) {
     if (info.dashed)
       frame.classList.add('dash' + info.dashed);
 
-    /*if (info.arrow != null) {
-      frame.classList.add('arrow' + info.arrow.toString());
-    }*/
-
     // Adding extra parameter
     info.available = true;
     info.letter = null;
@@ -203,7 +199,7 @@ define(['cursor'], function (Cursor) {
     if (word.length <= 1)
       return (null);
 
-    console.log('Mot ' + ((axis == AxisType.Horizontal) ? 'horizontal' : 'vertical') + ' trouvé: [' + word + ']');
+    // console.log('Mot ' + ((axis == AxisType.Horizontal) ? 'horizontal' : 'vertical') + ' trouvé: [' + word + ']');
     return  ( { 'axis': axis, 'word': word, 'start': firstLetterIndex } );
   }
 
@@ -275,12 +271,12 @@ define(['cursor'], function (Cursor) {
 
     // First we have to retreive the min size to display the grid
     limit = (container.offsetWidth < container.offsetHeight) ? container.offsetWidth : container.offsetHeight;
-    console.log('Plus petit cote: ' + limit);
+    // console.log('Plus petit cote: ' + limit);
 
     // Determine frame size
     frameSize = (_grid.nbLines > _grid.nbColumns) ? _grid.nbLines : _grid.nbColumns;
     frameSize = Math.floor(limit / frameSize);
-    console.log('Taille de case: ' + frameSize);
+    // console.log('Taille de case: ' + frameSize);
 
     // For each frame
     for (i = 0; i < nbFrames; i++) {
