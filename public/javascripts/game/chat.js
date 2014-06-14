@@ -7,7 +7,8 @@ define(function () {
   var _socket = null,
       _notifyCallback,
       _mesNode = document.getElementById('gsc-messages'),
-      _writeNode = document.getElementById('gsc-write');
+      _writeNode = document.getElementById('gsc-write'),
+      _serverColor = null;
 
   function Chat (socket, notifyPlayerListCallback) {
     // Store usefull object and callback
@@ -45,6 +46,7 @@ define(function () {
     if (msg.from == 'server') {
       box.classList.add('server-message');
       box.style.color = msg.color;
+      _serverColor = msg.color;
       box.innerHTML = msg.message;
 
       // If we received a brand new player list, notify mflEngine
@@ -68,8 +70,12 @@ define(function () {
   Chat.prototype.congrats = function (winner) {
     var box = document.createElement('article');
 
+    // Set box style
+    box.style.color = _serverColor;
+    box.classList.add('server-message');
+
     // Create message
-    box.innerHTML = 'Partie terminée.<br/>Félicitations à <strong style="color: ' + winner.monster.color + ';">' + winner.nick + '</strong> pour sa victoire !';
+    box.innerHTML = 'Partie terminée.<br/>Félicitations à <strong style="display: inline; color: ' + winner.monster.color + ';">' + winner.nick + '</strong> pour sa victoire !';
     
     // Add message in panel and scroll to the bottom
     _mesNode.appendChild(box);

@@ -300,13 +300,13 @@ html, body {
   border: 1px solid rgba(127, 140, 141, 0.2);
 
   outline: none;
-  overflow: hidden;
 }
 .frame::selection { background: transparent; }
 .frame::-moz-selection { background: transparent; }
 
 .description {
   background-color: rgba(52, 73, 94, 0.4);
+  background: url('../images/grey.png');
 }
 .description span {
   display: inline-block;
@@ -324,53 +324,50 @@ html, body {
   background-color: rgba(236, 240, 241, 0.4);
 }
 /* Right arrow */
-.letter.arrow0:after {
+.description span.arrow0:after {
   position: absolute;
-  left: -15%;
-  top: -33%;
-  
-  content: "\e606";
-  
+  right: -16px;
+  top: 5px;
+  content: "\e603";
   font-family: 'icomoon';
-  font-size: 0.6em;
+  font-size: 17px;
+  line-height: 17px;
   color: #444;
-  
-  opacity: 0.7;
 }
 /* Right Bottom arrow */
-.letter.arrow1:after {
+.description span.arrow1:after {
   position: absolute;
-  left: -5%;
-  top: -25%;
+  top: 5%;
+  right: -18px;
   content: "\e600";
   font-family: 'icomoon';
-  font-size: 0.6em;
+  font-size: 21px;
+  line-height: 21px;
   color: #444;
-  opacity: 0.7;
   -webkit-transform: rotateZ(90deg) rotateX(-180deg);
 }
 /* Bottom arrow */
-.letter.arrow2:after {
+.description span.arrow2:after {
   position: absolute;
-  left: 0;
-  top: -45%;
-  content: "\e606";
+  left: 35%;
+  bottom: -16px;
+  content: "\e603";
   font-family: 'icomoon';
-  font-size: 0.6em;
+  font-size: 17px;
+  line-height: 17px;
   color: #444;
-  opacity: 0.7;
   -webkit-transform: rotateZ(90deg);
 }
 /* Bottom Right arrow */
-.letter.arrow3:after {
+.description span.arrow3:after {
   position: absolute;
-  left: 0;
-  top: -40%;
+  left: 5%;
+  bottom: -19px;
   content: "\e600";
   font-family: 'icomoon';
-  font-size: 0.6em;
+  font-size: 24px;
   color: #444;
-  opacity: 0.7;
+  line-height: 21px;
 }
 
 .dash1 { border-bottom: 1px dashed rgba(127, 140, 141, 0.2); }
@@ -391,7 +388,7 @@ html, body {
   position: absolute;
   right: -0.2em;
   
-  content: "\e604";
+  content: "\e605";
   font-family: 'icomoon';
   font-size: 0.7em;
   
@@ -402,7 +399,7 @@ html, body {
   bottom: -0.8em;
   left: 31%;
   
-  content: "\e603";
+  content: "\e604";
   font-family: 'icomoon';
   font-size: 0.7em;
   
