@@ -35,7 +35,7 @@ define(['cursor'], function (Cursor) {
     var frame = document.createElement('div'),
         lineHeight,
         fontSize,
-        desc;
+        descNode;
 
     // Set class
     frame.className = 'frame description frame' + info.pos;
@@ -81,9 +81,13 @@ define(['cursor'], function (Cursor) {
 
     // Adding description in frame
     for (var i = 0; i < info.nbDesc; i++) {
-      desc = document.createElement('span');
-      desc.innerHTML = info.desc[i];
-      frame.appendChild(desc);
+      descNode = document.createElement('span');
+      
+      // Insert description and arrow
+      descNode.innerHTML = info.desc[i];
+      descNode.classList.add('arrow' + info.arrow[i].toString());
+      
+      frame.appendChild(descNode);
     };
 
     return (frame);
@@ -112,9 +116,9 @@ define(['cursor'], function (Cursor) {
     if (info.dashed)
       frame.classList.add('dash' + info.dashed);
 
-    if (info.arrow != null) {
+    /*if (info.arrow != null) {
       frame.classList.add('arrow' + info.arrow.toString());
-    }
+    }*/
 
     // Adding extra parameter
     info.available = true;

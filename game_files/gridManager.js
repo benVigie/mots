@@ -153,6 +153,9 @@ function parseGrid(callback, serverText) {
         case 'nbphotos':
         case 'casephotos':
         case 'fin':
+        case '?':
+        case '':
+          // Ignore useless tags
           break;
 
         case 'niveau':
@@ -168,7 +171,7 @@ function parseGrid(callback, serverText) {
         case 'legende':
           _gridInfos.level = parseInt(info[1][info[1].length - 1], 10);
           break;
-
+        
         default:
           console.info('\t[GRIDMANAGER] Unknow grid tag [' + info[0] + ']');
       }
@@ -179,16 +182,6 @@ function parseGrid(callback, serverText) {
   placeArrows(grid);
 
   _grid = grid;
-}
-
-
-function setArrowToFrame(grid, descFrameIndex, arrowType) {
-  // If we have to set the arrow to the next frame
-  if ((arrowType == enumArrow.Right) || (arrowType == enumArrow.RightBottom))
-    grid.cases[descFrameIndex + 1].arrow = arrowType;
-  // ... or to the frame under the current position 
-  else 
-    grid.cases[descFrameIndex + grid.nbColumns].arrow = arrowType;
 }
 
 function placeArrows(grid) {
@@ -202,40 +195,40 @@ function placeArrows(grid) {
       // According the type of description, set the right arrow to the 
       switch (grid.cases[i].value) {
         case 'a':
-          setArrowToFrame(grid, i, enumArrow.Right);
+          grid.cases[i].arrow[0] = enumArrow.Right;
           break;
         case 'b':
-          setArrowToFrame(grid, i, enumArrow.Bottom);
+          grid.cases[i].arrow[0] = enumArrow.Bottom;
           break;
         case 'c':
-          setArrowToFrame(grid, i, enumArrow.RightBottom);
+          grid.cases[i].arrow[0] = enumArrow.RightBottom;
           break;
         case 'd':
-          setArrowToFrame(grid, i, enumArrow.BottomRight);
+          grid.cases[i].arrow[0] = enumArrow.BottomRight;
           break;
 
-        case 'v':
-          setArrowToFrame(grid, i, enumArrow.RightBottom);
-          setArrowToFrame(grid, i, enumArrow.BottomRight);
-          break;
+        case 'f':
+        case 'g':
         case 'h':
+          grid.cases[i].arrow[0] = enumArrow.Right;
+          grid.cases[i].arrow[1] = enumArrow.Bottom;
+          break;
         case 'k':
         case 'l':
         case 'm':
-          setArrowToFrame(grid, i, enumArrow.RightBottom);
-          setArrowToFrame(grid, i, enumArrow.Bottom);
+          grid.cases[i].arrow[0] = enumArrow.RightBottom;
+          grid.cases[i].arrow[1] = enumArrow.Bottom;
           break;
+        case 'p':
         case 'q':
         case 'r':
-        case 'w':
-          setArrowToFrame(grid, i, enumArrow.Right);
-          setArrowToFrame(grid, i, enumArrow.BottomRight);
+          grid.cases[i].arrow[0] = enumArrow.Right;
+          grid.cases[i].arrow[1] = enumArrow.BottomRight;
           break;
-        case 'f':
-        case 'g':
-        case 'p':
-          setArrowToFrame(grid, i, enumArrow.Right);
-          setArrowToFrame(grid, i, enumArrow.Bottom);
+        case 'v':
+        case 'w':
+          grid.cases[i].arrow[0] = enumArrow.RightBottom;
+          grid.cases[i].arrow[1] = enumArrow.BottomRight;
           break;
 
         default:
@@ -330,16 +323,17 @@ GridManager.prototype.getGrid = function () {
       index;
 
   // Clone the grid object by extanded an empty object
-  clonedGrid = Extend({}, _grid);
+  // clonedGrid = Extend({}, _grid);
+  clonedGrid = JSON.parse(JSON.stringify(_grid));
 
   // Adding grid's informations
   clonedGrid.infos = _gridInfos;
 
   // Finally hide letters before send it to the players :)
-  /*for (index in clonedGrid.cases) {
+  for (index in clonedGrid.cases) {
     if (clonedGrid.cases[index].type == enums.CaseType.Letter)
       clonedGrid.cases[index].value = '';
-  };*/
+  };
 
   return (clonedGrid);
 }
@@ -371,7 +365,7 @@ GridManager.prototype.retreiveAndParseGrid = function (gridNumber, callback) {
         // Parse server response to extract a grid object
         parseGrid(callback, Buffer.concat(bodyChunks).toString());
         
-        console.info('\n\t[GRIDMANAGER] Parsing Done...');
+        console.info('\n\t[GRIDMANAGER] Parsing Done. Now play ' + _gridInfos.provider + ' ' +  _gridInfos.id + ' - Level ' +  _gridInfos.level);
       });
 
     }

@@ -31,7 +31,6 @@ function LetterCase(Position, Content) {
   this.type = enums.CaseType.Letter;
   
   this.available = true;
-  this.arrow = null;
 };
 
 function DescriptionCase(Position, Content) {
@@ -39,12 +38,19 @@ function DescriptionCase(Position, Content) {
   this.value = Content;
   this.type = enums.CaseType.Description;
 
+  // If the content letter is a letter greater than 'd', we will have a frame with 2 descriptions inside
   this.nbDesc = (Content > 'd') ? 2 : 1;
   this.desc = [];
-  this.desc[0] == null;
+  this.arrow = [];
+  this.desc[0] = null;
+  this.arrow[0] = null;
   this.nbLines = this.nbDesc;
-  if (this.nbDesc == 2)
-    this.desc[1] == null;
+  
+  // For more than 1 desc, initialize the other 
+  if (this.nbDesc == 2) {
+    this.desc[1] = null;
+    this.arrow[1] = null;
+  }
 };
 
 function EmptyCase(Position, Content) {
@@ -58,9 +64,16 @@ util.inherits(DescriptionCase, Case);
 util.inherits(EmptyCase, Case);
 
 
+/*
+* Try to put a description in this case
+* If a description is already in there don't apply the new one and return false
+* @param {String} description   The description to apply
+* @return {Boolean}   True if the description is apply to this case, false either
+*/
 DescriptionCase.prototype.setDescription = function (description) {
   var desc;
 
+  // If the first desc cell is available
   if (this.desc[0] == null) {
     // Replace \n by <br/>
     desc = description.replace(/\n/gi, '<br/>');
@@ -69,6 +82,7 @@ DescriptionCase.prototype.setDescription = function (description) {
     this.desc[0] = desc;
     return (true);
   }
+  // Else check if the second one is available
   else if ((this.nbDesc == 2) && (this.desc[1] == null)) {
     // Replace \n by <br/>
     desc = description.replace(/\n/gi, '<br/>');
@@ -79,14 +93,6 @@ DescriptionCase.prototype.setDescription = function (description) {
   }
   else
     return (false);
-};
-
-LetterCase.prototype.getCase = function () {
-  console.info('Surcharge de la fonction getCase() par l objet LetterCase ! :p');
-};
-
-DescriptionCase.prototype.getCase = function () {
-  console.info('Surcharge de la fonction getCase() par l objet DescriptionCase ! xoxo');
 };
 
 
