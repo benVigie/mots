@@ -72,7 +72,6 @@ html, body {
   background-color: #ecf0f1;
 
   -webkit-transition: bottom 400ms ease;
-  -moz-transition: bottom 400ms ease;
   transition: bottom 400ms ease;
 }
 
@@ -280,6 +279,10 @@ html, body {
   float: left;
   width: 900px;
   height: 100%;
+
+  -webkit-perspective: 1200;
+  -moz-perspective: 1200;
+  perspective: 1200;
 }
 
 /* Score part */
@@ -356,7 +359,22 @@ html, body {
 .letter {
   text-align: center;
   background-color: rgba(236, 240, 241, 0.4);
+
+  -webkit-transition: -webkit-transform 350ms ease;
+  transition: transform 350ms ease;
 }
+
+/* Letter animation */
+.reveal0 { 
+  -webkit-transform: rotateY(360deg);
+  transform: rotateY(360deg);
+}
+.reveal1 { 
+  -webkit-transform: rotateX(360deg);
+  transform: rotateX(360deg);
+}
+
+
 /* Right arrow */
 .description span.arrow0:after {
   position: absolute;
@@ -476,7 +494,6 @@ html, body {
   border-radius: 3px;
 
   -webkit-transition: height 0.3s ease-out;
-  -moz-transition: height 0.3s ease-out;
   transition: height 0.3s ease-out;
 }
 
@@ -556,7 +573,6 @@ html, body {
 
   background: url('../images/pink-bg.png');
   -webkit-transition: top 300ms ease-in;
-  -moz-transition: top 300ms ease-in;
   transition: top 300ms ease-in;
 }
 #info-tooltip strong {
@@ -588,7 +604,6 @@ html, body {
   line-height: 75px;
 
   -webkit-transition: top 0.8s ease, height 0.8s ease;
-  -moz-transition: top 0.8s ease, height 0.8s ease;
   transition: top 0.8s ease, height 0.8s ease;
 }
 #ig-infos > header.game-over {
@@ -629,7 +644,6 @@ html, body {
   animation: winnerAnimation 500ms ease infinite alternate;
 
   -webkit-transition: margin-bottom 400ms ease;
-  -moz-transition: margin-bottom 400ms ease;
   transition: margin-bottom 400ms ease;
 }
 #winner-pic.winner-pic-reveal { margin-bottom: 10px; }

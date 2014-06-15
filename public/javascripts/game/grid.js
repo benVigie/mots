@@ -3,6 +3,8 @@
 */
 define(['cursor'], function (Cursor) {
 
+  var REVEAL_WORD_ANIM_DELAY  = 50;
+
   var CaseType = {
     All: 1,
     Letter: 2,
@@ -238,7 +240,8 @@ define(['cursor'], function (Cursor) {
         jump = (wordObj.axis == AxisType.Horizontal) ? 1 : _grid.nbColumns,
         size = wordObj.word.length,
         i,
-        node;
+        node,
+        animationDelay = 0;
 
     for (i = 0; i < size; i++) {
       // If this letter is a just found
@@ -249,8 +252,11 @@ define(['cursor'], function (Cursor) {
 
         // Display it
         node = document.querySelector('.frame' + index);
+        node.style.cssText += '-webkit-transition-delay: ' + animationDelay + 'ms; transition-delay: ' + animationDelay + 'ms; color: ' + wordObj.color;
+        node.classList.add('reveal' + wordObj.axis);
         node.innerHTML = _grid.cases[index].letter;
-        node.style.color = wordObj.color;
+        
+        animationDelay += REVEAL_WORD_ANIM_DELAY;
       }
 
       index += jump;
