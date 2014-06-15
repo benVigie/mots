@@ -68,7 +68,7 @@ define(function () {
   * Display the tooltip 
   * @param: {Bool}    isShow    Boolean to show or hide the panel (true == show)
   * @param: {String}  htmlText  Text to display
-  * @param: {Int}     timeout   Time in millisecond before hide the info panel
+  * @param: {Int}     timeout   [Optional] Time in millisecond before hide the info panel
   */
   UITools.prototype.InfoTooltip = function (isShow, htmlText, timeout) {
     var topBar   = document.getElementById('info-tooltip'),

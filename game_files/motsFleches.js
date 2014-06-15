@@ -6,7 +6,7 @@ var enums           = require('./enums'),
 // Defines
 var MAX_PLAYERS   = 4;
 var SERVER_CHAT_COLOR = '#c0392b';
-var TIME_BEFORE_START = 3;
+var TIME_BEFORE_START = 5;
 
 // Parameters
 var _playersManager,
