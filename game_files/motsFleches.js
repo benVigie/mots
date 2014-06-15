@@ -1,6 +1,6 @@
 var enums           = require('./enums'),
     config          = require('../conf.json'),
-    GridManager   = require('./gridManager'),
+    GridManager     = require('./gridManager'),
     PlayersManager  = require('./playersManager');
 
 // Defines
@@ -17,6 +17,9 @@ var _playersManager,
 
 function startGame() {
   var Grid = _gridManager.getGrid();
+
+  // Change game state
+  _gameState = enums.ServerState.OnGame;
 
   // Send grid to clients
   _io.sockets.emit('grid_event', { grid: Grid, timer: TIME_BEFORE_START } );
@@ -169,13 +172,15 @@ exports.startMflServer = function (desiredGrid) {
 
       socket.on('userIsReady', function (infos) {
         // Log player, bind events and notify everyone
-        playerLog(socket, infos.nick, infos.monster);
+        if (_gameState == enums.ServerState.WaitingForPlayers)
+          playerLog(socket, infos.nick, infos.monster);
+        else // Notify game has started
+          socket.disconnect('game_already_started');
       });
 
       socket.on('chat', function (message) {
         // If it's a message for the server, treat it
-        // if (message == '!start')
-        if (message == '!s')
+        if (message == '!start')
           startGame();
         // Else broadcast the message to everyone
         else {

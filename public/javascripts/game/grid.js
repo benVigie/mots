@@ -3,6 +3,8 @@
 */
 define(['cursor'], function (Cursor) {
 
+  var REVEAL_WORD_ANIM_DELAY  = 50;
+
   var CaseType = {
     All: 1,
     Letter: 2,
@@ -116,10 +118,6 @@ define(['cursor'], function (Cursor) {
     if (info.dashed)
       frame.classList.add('dash' + info.dashed);
 
-    /*if (info.arrow != null) {
-      frame.classList.add('arrow' + info.arrow.toString());
-    }*/
-
     // Adding extra parameter
     info.available = true;
     info.letter = null;
@@ -203,7 +201,7 @@ define(['cursor'], function (Cursor) {
     if (word.length <= 1)
       return (null);
 
-    console.log('Mot ' + ((axis == AxisType.Horizontal) ? 'horizontal' : 'vertical') + ' trouvé: [' + word + ']');
+    // console.log('Mot ' + ((axis == AxisType.Horizontal) ? 'horizontal' : 'vertical') + ' trouvé: [' + word + ']');
     return  ( { 'axis': axis, 'word': word, 'start': firstLetterIndex } );
   }
 
@@ -242,7 +240,8 @@ define(['cursor'], function (Cursor) {
         jump = (wordObj.axis == AxisType.Horizontal) ? 1 : _grid.nbColumns,
         size = wordObj.word.length,
         i,
-        node;
+        node,
+        animationDelay = 0;
 
     for (i = 0; i < size; i++) {
       // If this letter is a just found
@@ -253,8 +252,11 @@ define(['cursor'], function (Cursor) {
 
         // Display it
         node = document.querySelector('.frame' + index);
+        node.style.cssText += '-webkit-transition-delay: ' + animationDelay + 'ms; transition-delay: ' + animationDelay + 'ms; color: ' + wordObj.color;
+        node.classList.add('reveal' + wordObj.axis);
         node.innerHTML = _grid.cases[index].letter;
-        node.style.color = wordObj.color;
+        
+        animationDelay += REVEAL_WORD_ANIM_DELAY;
       }
 
       index += jump;
@@ -275,12 +277,12 @@ define(['cursor'], function (Cursor) {
 
     // First we have to retreive the min size to display the grid
     limit = (container.offsetWidth < container.offsetHeight) ? container.offsetWidth : container.offsetHeight;
-    console.log('Plus petit cote: ' + limit);
+    // console.log('Plus petit cote: ' + limit);
 
     // Determine frame size
     frameSize = (_grid.nbLines > _grid.nbColumns) ? _grid.nbLines : _grid.nbColumns;
     frameSize = Math.floor(limit / frameSize);
-    console.log('Taille de case: ' + frameSize);
+    // console.log('Taille de case: ' + frameSize);
 
     // For each frame
     for (i = 0; i < nbFrames; i++) {

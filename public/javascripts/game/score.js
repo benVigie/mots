@@ -33,7 +33,8 @@ define(function () {
     scoreNode.innerHTML = '';
 
     for (i = 0; i < nbPlayers; i++) {
-      scoreNode.innerHTML += '<article id="player' + playerList[i].id + '" class="playerScore bloc' + nbPlayers + '"><div class="score-bar" style="background-color: ' + playerList[i].monster.color + '"><img src="' + playerList[i].monster.path + '"></div><footer><h3>' + playerList[i].nick + '</h3><strong>' + playerList[i].score + ' points</strong><span>' + playerList[i].nbWords + ' mots</span></footer></article>';
+      if (playerList[i].monster)
+        scoreNode.innerHTML += '<article id="player' + playerList[i].id + '" class="playerScore bloc' + nbPlayers + '"><div class="score-bar" style="background-color: ' + playerList[i].monster.color + '"><img src="' + playerList[i].monster.path + '"></div><footer><h3>' + playerList[i].nick + '</h3><strong>' + playerList[i].score + ' points</strong><span>' + playerList[i].nbWords + ' mots</span></footer></article>';
     }
   };
 
