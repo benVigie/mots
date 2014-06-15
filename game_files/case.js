@@ -6,16 +6,7 @@ function Case() {
   this.value      = null;
   this.dotted     = 0;
   this.theme      = false;
-  this.direction  = enums.ArrowDirections.None;
   this.type       = null;
-};
-
-Case.prototype.getCase = function () {
-  console.warn('This method needs to be overwritten !!!');
-};
-
-Case.prototype.setArrow = function (arrowDirection) {
-  this.direction = arrowDirection;
 };
 Case.prototype.setThemeCase = function (isThemeCase) {
   this.theme = isThemeCase;

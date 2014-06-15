@@ -1,15 +1,15 @@
 var http    = require('http'),
     config  = require('../conf.json').GRID_PROVIDER,
     enums   = require('./enums'),
-    Case    = require('./case'),
-    Extend  = require('util')._extend;
+    Case    = require('./case');
 
 var _grid           = null, // the grid itself !
     _wordsPoints    = null,
     _theme          = null,
     _gridInfos      = null,
     _nbLetters      = 0,
-    _lastSearchCase = 0;
+    _lastSearchCase = 0,
+    _maxPoints      = 0;
 
 var enumCaseParser = {
   InARow: 1,
@@ -72,13 +72,6 @@ function insertDescription(grid, desc) {
   }
 }
 
-function isALetterCase(Char) {
-  if ((Char >= 'A') && (Char <= 'Z'))
-    return (true);
-
-  return (false);
-}
-
 function getCaseType(Char) {
   if (Char == 'z')
     return (enums.CaseType.Empty);
@@ -112,14 +105,17 @@ function parseGrid(callback, serverText) {
         cases: []
       };
 
+  // Initial sort. Isolate each "line" by spliting on '&' char
   stArray = serverText.split('&');
 
+  // Then parse each line
   length = stArray.length;
   for (i = 0; i < length; i++) {
     
+    // Get key / value for this line
     info = stArray[i].split('=');
 
-    // Insert new line in grid
+    // If this line describe a grid line, insert new line in our grid
     if (info[0].indexOf('lign') > -1) {
 
       for (j in info[1]) {
@@ -140,12 +136,15 @@ function parseGrid(callback, serverText) {
         grid.nbLines = info[1].length;
       grid.nbColumns++;
     }
+    // If this line is a description, add it
     else if (info[0].indexOf('tx') > -1) {
       insertDescription(grid, info[1]);
     }
+    // If this line set a dotted frame, apply the effect to the right frame
     else if (info[0].indexOf('pointille') > -1) {
       grid.cases[(parseInt(info[0].substr(9), 10)) - 1].dashed = info[1];
     }
+    // Else try to deal with the line key
     else {
       switch (info[0]) {
         case 'nomjeu':
@@ -178,9 +177,10 @@ function parseGrid(callback, serverText) {
     }
   };
 
-  // Place arrows
+  // Once the entire grid is retreived, place arrows
   placeArrows(grid);
 
+  // Then store the grid
   _grid = grid;
 }
 
@@ -234,7 +234,6 @@ function placeArrows(grid) {
         default:
           console.error('[ERROR][gridManager::placeArrows] Unknow arrow type [' + grid.cases[i].value + '] at frame ' + i);
       }
-
     }
   };
 }
@@ -249,7 +248,7 @@ function getGridAddress(commandArgv) {
     // No number given, load day grid
     case 0:
       console.info('\n\t[GRIDMANAGER] Load day grid');
-      // Compare the default date with today. Add this difference to the default grid number
+      // Compare the default date with today. Add this difference to the default grid number. Assume that we have one grid per day !
       gridDefaultDay = new Date(config.PROVIDER_DEFAULT_GRID_DATE);
       today = new Date();
       dayDiff = Math.abs(today.getTime() - gridDefaultDay.getTime());
@@ -296,7 +295,7 @@ GridManager.prototype.checkPlayerWord = function (wordObj) {
   for (i = 0; i < wordSize; i++) {
     // If the letter doesn't match the grid, return false
     if (wordObj.word[i] != _grid.cases[index].value)
-      return (0);
+      return (-1);
     
     if (_grid.cases[index].available == true)
       points++;
@@ -304,7 +303,7 @@ GridManager.prototype.checkPlayerWord = function (wordObj) {
     index += jump;
   };
 
-  // It'es the righ word, so set letters as already founded
+  // It's the righ word, so set letters as already founded
   index = wordObj.start;
   for (i = 0; i < wordSize; i++) {
     if (_grid.cases[index].available == true)
@@ -316,14 +315,18 @@ GridManager.prototype.checkPlayerWord = function (wordObj) {
   _grid.nbWords--;
 
   return (points);
-}
+};
 
+/*
+* Return a complete grid object to send to the clients.
+* The "grid" object is composed by the grid itself, grid informations (nb lines, etc...) and provider informations
+* @return {Object}    A grid object with all informations needed by the clients
+*/
 GridManager.prototype.getGrid = function () {
   var clonedGrid,
       index;
 
   // Clone the grid object by extanded an empty object
-  // clonedGrid = Extend({}, _grid);
   clonedGrid = JSON.parse(JSON.stringify(_grid));
 
   // Adding grid's informations
@@ -336,20 +339,64 @@ GridManager.prototype.getGrid = function () {
   };
 
   return (clonedGrid);
+};
+
+/*
+* To retreive the number of words still not found
+* @return {Int}    The number of words still available
+*/
+GridManager.prototype.getNbRemainingWords = function () {
+  return (_grid.nbWords);
 }
 
-GridManager.prototype.getAccomplishmentRate = function (playerPoints) {
-  return (Math.floor(playerPoints / _nbLetters * 100));
-}
+/*
+* Retreive the accomplishment rate for 
+* @return {Int}    The number of words still available
+*/
+GridManager.prototype.getAccomplishmentRate = function (playerPoints, nbPlayers) {
+  // If we have not retreive the maximum of points for this game
+  if (_maxPoints == 0) {
+    switch (nbPlayers) {
+      case 1:
+        // Because of bonus points, we have to give more points than letters available for 1 player game
+        _maxPoints = Math.floor(_nbLetters * 1.5);
+        break;
+      case 2:
+        // For a regular 2 player game, the maximum of points can be 90% of letters available. That seems fair :)
+        _maxPoints = Math.floor(_nbLetters * 0.9);
+        break;
+      case 3:
+        // For 3 player, the maximum is 66% of the amount of letters.
+        _maxPoints = Math.floor(_nbLetters * 0.66);
+        break;
+      case 4:
+        // If you found half of all letters in 4 player game, it's really good
+        _maxPoints = Math.floor(_nbLetters * 0.5);
+        break;
+      default:
+        // In case of error, max points == number of letters to find
+        _maxPoints = _nbLetters;
+        break;
+    }
+  }
 
+  return (Math.floor(playerPoints / _maxPoints * 100));
+};
+
+/*
+* This method will check for the grid, retreive it and parse it. t's the main method of this class.
+* @param {Int}      gridNumber    The grid number ID to request to the provider
+* @param {Function} callback      The callback to raise either on success or error !
+*/
 GridManager.prototype.retreiveAndParseGrid = function (gridNumber, callback) {
-  var gridAddr = getGridAddress(gridNumber),
-      req = http.get(gridAddr, function (res) {
+  var gridAddr = getGridAddress(gridNumber),    // Retreive the grid URL, build from provider infos and ID requested
+      req = http.get(gridAddr, function (res) { // Launch the request !
     
     var bodyChunks = [];
 
     console.info('\n\t[GRIDMANAGER] Try to load ' + gridAddr);
     
+    // If an error occurs, raise failure callback
     if (res.statusCode !== 200) {
       onGetGridError(callback, 'Wrong statusCode ' + res.statusCode);
     }
@@ -377,7 +424,6 @@ GridManager.prototype.retreiveAndParseGrid = function (gridNumber, callback) {
     onGetGridError(callback, e.message);
   });
 
-  return (true);
-}
+};
 
 module.exports = GridManager;
