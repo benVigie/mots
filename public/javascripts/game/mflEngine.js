@@ -106,7 +106,6 @@ require(['../lib/text!../../conf.json', 'UITools', 'grid', 'chat', 'score'], fun
 
         // Show the color !
         document.getElementById('lp-nick').style.borderColor = event.srcElement.style.borderColor;
-        document.getElementById('lp-start-btn').style.borderColor = event.srcElement.style.borderColor;
       }
     };
   }
@@ -155,7 +154,7 @@ require(['../lib/text!../../conf.json', 'UITools', 'grid', 'chat', 'score'], fun
     });
 
     // Display timer before game start
-    if (gridEvent.timer) {
+    if (gridEvent.timer > 0) {
       _ui.InfoTooltip(true, '<strong>Tenez-vous prêt !</strong><br/>Début des hostilités dans <strong>' + (gridEvent.timer--) + '</strong>');
       startTimer = window.setInterval(function () {
         _ui.InfoTooltip(true, '<strong>Tenez-vous prêt !</strong><br/>Début des hostilités dans <strong>' + (gridEvent.timer--) + '</strong>');
@@ -178,7 +177,6 @@ require(['../lib/text!../../conf.json', 'UITools', 'grid', 'chat', 'score'], fun
       _gridManager.DisplayGrid();
       _ui.displayGridInformations(gridEvent.grid.infos);
     }
-      
 
     // Bind get word event
     _socket.on('word_founded', _gridManager.RevealWord);
