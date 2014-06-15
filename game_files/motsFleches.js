@@ -92,24 +92,26 @@ function checkWord(player, wordObj) {
   points = _gridManager.checkPlayerWord(wordObj);
 
   // If the players has some points, it's mean it's the right word ! Notify players about it
-  if (points > 0) {
+  if (points >= 0) {
 
     // Notify all clients about this word
     wordObj.color = player.getColor();
-    _io.sockets.emit('word_founded', wordObj );
+    _io.sockets.emit('word_founded', wordObj);
 
     // Check for bonuses
-    bonuses = bonusChecker(points, _gridManager.getGrid().nbWords);
+    bonuses = bonusChecker(points, _gridManager.getNbRemainingWords());
 
     // Remember time this last word had been found
     _lastWordFoudTimestamp = new Date().getTime();
 
     // Update player score and notify clients
     player.updateScore(points + bonuses.points);
-    _io.sockets.emit('score_update', { playerID: player.getID(), score: player.getScore(), words: player.getNbWords(), progress: _gridManager.getAccomplishmentRate(player.getScore()), bonus: bonuses.bonusList } );
+    _io.sockets.emit('score_update', { playerID: player.getID(), score: player.getScore(), words: player.getNbWords(), progress: _gridManager.getAccomplishmentRate(player.getScore(), _playersManager.getNumberOfPlayers()), bonus: bonuses.bonusList } );
 
-    if (_gridManager.getGrid().nbWords <= 0)
+    if (_gridManager.getNbRemainingWords() <= 0) {
+      console.log('[SERVER] Game over ! Sending player\'s notification...');
       _io.sockets.emit('game_over', _playersManager.getWinner().getPlayerObject());
+    }
   }
 }
 
@@ -139,7 +141,7 @@ exports.startMflServer = function (desiredGrid) {
   _gridManager.retreiveAndParseGrid(desiredGrid, function (grid) {
     if (grid == null) {
       // If an error occurs, exit
-      console.error('[ERROR] Cannot retreive grid. Abord server.');
+      console.error('[ERROR] Cannot retreive grid. Abort server.');
       process.exit(1);
     }
   });
@@ -180,7 +182,7 @@ exports.startMflServer = function (desiredGrid) {
 
       socket.on('chat', function (message) {
         // If it's a message for the server, treat it
-        if (message == '!start')
+        if ((_gameState == enums.ServerState.WaitingForPlayers) && (message == '!start'))
           startGame();
         // Else broadcast the message to everyone
         else {

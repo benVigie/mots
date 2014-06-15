@@ -71,8 +71,8 @@ html, body {
 
   background-color: #ecf0f1;
 
-  -webkit-transition: bottom 400ms ease;
-  transition: bottom 400ms ease;
+  -webkit-transition: bottom 600ms ease;
+  transition: bottom 600ms ease;
 }
 
 .ui-displayed {

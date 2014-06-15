@@ -2,7 +2,7 @@ var util          = require('util'),
     EventEmitter  = require('events').EventEmitter,
     Player        = require('./player'),
     enums         = require('./enums'),
-    Monsters         = require('./playersLogos').Monsters;
+    Monsters      = require('./playersLogos').Monsters;
 
 var _playersList      = []
     _currentPlayerId  = 0;
