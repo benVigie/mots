@@ -130,27 +130,8 @@ require(['../lib/text!../../conf.json', 'UITools', 'grid', 'chat', 'score'], fun
     // Connect chat
     _chat = new Chat(_socket, _scoreManager.UpdatePlayerList);
 
-    _socket.on('grid_event', function (gridEvent) {
-
-      // Instanciate grid manager and provide the validation callback
-      _gridManager = new GridManager(gridEvent.grid, function (wordObj) {
-        _socket.emit('wordValidation', wordObj);
-      });
-      _gridManager.DisplayGrid();
-      _ui.displayGridInformations(gridEvent.grid.infos);
-  
-      // Bind get word event
-      _socket.on('word_founded', _gridManager.RevealWord);
-
-      // Bind score update
-      _socket.on('score_update', _scoreManager.RefreshScore);
-    
-      // Finally bind game over event
-      _socket.on('game_over', function (winner) {
-        _ui.displayGameOver(winner);
-        _chat.congrats(winner);
-      });
-    });
+    // Bind grid event, meaning the game is about to start !
+    _socket.on('grid_event', onStartGame);
 
     // Send player infos to the server
     _socket.emit('userIsReady', { 'nick': nick, 'monster': monster } );
@@ -163,6 +144,53 @@ require(['../lib/text!../../conf.json', 'UITools', 'grid', 'chat', 'score'], fun
     setPlayerColor(monsterNode.style.borderColor);
 
     return (false);
+  }
+
+  function onStartGame(gridEvent) {
+    var startTimer;
+
+    // Instanciate grid manager and provide the validation callback
+    _gridManager = new GridManager(gridEvent.grid, function (wordObj) {
+      _socket.emit('wordValidation', wordObj);
+    });
+
+    // Display timer before game start
+    if (gridEvent.timer) {
+      _ui.InfoTooltip(true, '<strong>Tenez-vous prêt !</strong><br/>Début des hostilités dans <strong>' + (gridEvent.timer--) + '</strong>');
+      startTimer = window.setInterval(function () {
+        _ui.InfoTooltip(true, '<strong>Tenez-vous prêt !</strong><br/>Début des hostilités dans <strong>' + (gridEvent.timer--) + '</strong>');
+        
+        // When the timer is over
+        if (gridEvent.timer < 0) {
+          // Clear timer
+          window.clearInterval(startTimer);
+
+          // Display grid !!
+          _gridManager.DisplayGrid();
+          _ui.displayGridInformations(gridEvent.grid.infos);
+
+          // Remove tooltip
+          _ui.InfoTooltip(false, 'Bonne chance !');
+        }
+      }, 1000);
+    }
+    else {
+      _gridManager.DisplayGrid();
+      _ui.displayGridInformations(gridEvent.grid.infos);
+    }
+      
+
+    // Bind get word event
+    _socket.on('word_founded', _gridManager.RevealWord);
+
+    // Bind score update
+    _socket.on('score_update', _scoreManager.RefreshScore);
+  
+    // Finally bind game over event
+    _socket.on('game_over', function (winner) {
+      _ui.displayGameOver(winner);
+      _chat.congrats(winner);
+    });
   }
 
   function setPlayerColor(color) {
