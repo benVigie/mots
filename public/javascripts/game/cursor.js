@@ -159,8 +159,8 @@ define(function () {
       insertLetter(key);
     }
 
-    // If backspace or escape is pressed
-    if ((key == 8) || (key == 27)) {
+    // If backspace / escape / del is pressed
+    if ((key == 8) || (key == 27) || (key == 46)) {
       removeLetter();
       event.preventDefault();
     }

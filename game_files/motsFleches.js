@@ -16,13 +16,16 @@ var _playersManager,
     _lastWordFoudTimestamp;
 
 function startGame() {
-  var Grid = _gridManager.getGrid();
+  var Grid  = _gridManager.getGrid(),
+      delay;
+
+  delay = (_playersManager.getNumberOfPlayers() > 1) ? TIME_BEFORE_START : 0;
 
   // Change game state
   _gameState = enums.ServerState.OnGame;
 
   // Send grid to clients
-  _io.sockets.emit('grid_event', { grid: Grid, timer: TIME_BEFORE_START } );
+  _io.sockets.emit('grid_event', { grid: Grid, timer: delay } );
 }
 
 function playerLog (socket, nick, monsterId) {
