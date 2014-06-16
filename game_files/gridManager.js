@@ -366,11 +366,11 @@ GridManager.prototype.getAccomplishmentRate = function (playerPoints, nbPlayers)
         _maxPoints = Math.floor(_nbLetters * 0.9);
         break;
       case 3:
-        // For 3 player, the maximum is 66% of the amount of letters.
+        // For 3 player, the maximum is 75% of the amount of letters.
         _maxPoints = Math.floor(_nbLetters * 0.75);
         break;
       case 4:
-        // If you found half of all letters in 4 player game, it's really good
+        // If you found 66% of all letters in 4 player game, it's really good
         _maxPoints = Math.floor(_nbLetters * 0.66);
         break;
       default:
