@@ -28,4 +28,9 @@ Player.prototype.updateScore = function (points) {
   this._playerTinyObject.nbWords++;
 };
 
+Player.prototype.resetPlayerInfos = function () {
+  this._playerTinyObject.score = 0;
+  this._playerTinyObject.nbWords = 0;
+};
+
 module.exports = Player;

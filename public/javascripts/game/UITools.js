@@ -161,7 +161,6 @@ define(function () {
   UITools.prototype.displayGameOver = function (winner) {
     var gamePanel = document.querySelector('#ig-infos > footer');
 
-    console.log(winner);
     // First stop the timer
     if (_gameTimer != null)
       window.clearInterval(_gameTimer);
@@ -175,6 +174,40 @@ define(function () {
       document.getElementById('winner-pic').classList.add('winner-pic-reveal');
     }, 200);
   };
+
+  /*
+  * Reset grid information panel to prepare for a new game
+  */
+  UITools.prototype.resetGridInformations = function () {
+    if (_gameTimer != null)
+      window.clearInterval(_gameTimer);
+  };
+
+  /*
+  * Retreive the RGB components of a given color either #123456 or rgb(x,x,x)
+  * @param {String}  color  The color as a string
+  * @return {String}  The color formated as r,g,b
+  */
+  UITools.prototype.getRGBComponents = function(color) {
+    var bigInt,
+        r = 231,  // Default color
+        g = 166,  // Default color
+        b = 26;   // Default color
+
+    // If the color provided by the browser is in hex format (#123456)
+    if (color[0] == '#') {
+      bigInt = parseInt(color.substr(1), 16)
+      r = (bigInt >> 16) & 255;
+      g = (bigInt >> 8) & 255;
+      b = bigInt & 255;
+    }
+    // If the color is already in rgb format
+    else if (color[0] == 'r')
+      return (color.substr(4).split(')')[0]);
+
+    return (r + ',' + g + ',' + b);
+  };
+
 
   return (UITools);
   

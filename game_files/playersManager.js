@@ -100,6 +100,13 @@ PlayersManager.prototype.getWinner = function () {
   return (_playersList[winnerIndex]);
 };
 
+PlayersManager.prototype.resetPlayersForNewGame = function () {
+  var index;
+
+  for (index in _playersList) {
+    _playersList[index].resetPlayerInfos();
+  };
+};
 
 
 module.exports = PlayersManager;
