@@ -82,6 +82,26 @@ define(function () {
 
   };
 
+  /*
+  * Reset player's score to prepare for a ne game
+  * @param: {Array}  playerList   Array of players
+  */
+  Score.prototype.resetScores = function() {
+    var scoreNodes = document.querySelectorAll('.playerScore'),
+        size,
+        i;
+
+    for (i = 0, size = scoreNodes.length; i < size; i++) {
+      // Reset score bar
+      scoreNodes[i].querySelector('div').style.height = '0%';
+
+      // Update score and nb words
+      scoreNodes[i].querySelector('footer > strong').innerHTML = '0 points';
+      scoreNodes[i].querySelector('footer > span').innerHTML = '0 mots';
+    }
+
+  };
+
 
   return (Score);
 

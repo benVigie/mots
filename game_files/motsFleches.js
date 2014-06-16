@@ -28,6 +28,34 @@ function startGame() {
   _io.sockets.emit('grid_event', { grid: Grid, timer: delay } );
 }
 
+function resetGame(gridID) {
+  var infos;
+
+  // Reset game state
+  _gameState = enums.ServerState.WaitingForPlayers;
+
+  // Reset players
+  _playersManager.resetPlayersForNewGame();
+
+  // Reset the grid
+  _gridManager.resetGrid(gridID, function (grid) {
+    if (grid == null) {
+      // If an error occurs, exit
+      console.error('[ERROR] Cannot retreive requested grid [' + gridID + ']');
+      sendChatMessage('Oups, impossible de récupérer la grille ' + gridID + '!');
+    }
+    else {
+      infos = _gridManager.getGridInfos();
+      sendChatMessage('Grille ' + infos.provider + ' ' + infos.id + ' (Niveau ' + infos.level + ') prête !');
+      
+      // Send reset order to clients
+      _io.sockets.emit('grid_reset');
+    }
+  });
+
+
+}
+
 function playerLog (socket, nick, monsterId) {
   // Retreive PlayerInstance
   socket.get('PlayerInstance', function (error, player) {
@@ -118,6 +146,29 @@ function checkWord(player, wordObj) {
   }
 }
 
+function checkServerCommand(message) {
+  var number;
+
+  // If it's not a server command
+  if (message[0] != '!')
+    return (false);
+
+  // Check the start command
+  if ((_gameState == enums.ServerState.WaitingForPlayers) && (message == '!start')) {
+    startGame();
+    return (true);
+  }
+  
+  // Check the change grid command
+  if (message.indexOf('!grid') >= 0) {
+    // Retreive grid number and reset game parameters
+    number = parseInt(message.substr(6));
+    resetGame(number);
+    return (true);
+  }
+
+  return (false);
+}
 
 function sendChatMessage(Message, sender, color, playerList) {
   if (sender === undefined) {
@@ -185,10 +236,8 @@ exports.startMflServer = function (desiredGrid) {
 
       socket.on('chat', function (message) {
         // If it's a message for the server, treat it
-        if ((_gameState == enums.ServerState.WaitingForPlayers) && (message == '!start'))
-          startGame();
         // Else broadcast the message to everyone
-        else {
+        if (checkServerCommand(message) == false) {
           socket.get('PlayerInstance', function (error, player) {
             sendChatMessage(message, player.getNick(), player.getColor());
           });

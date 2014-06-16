@@ -342,6 +342,14 @@ GridManager.prototype.getGrid = function () {
 };
 
 /*
+* Return grid informations
+* @return {Object}    The grid information object
+*/
+GridManager.prototype.getGridInfos = function () {
+  return (_gridInfos);
+};
+
+/*
 * To retreive the number of words still not found
 * @return {Int}    The number of words still available
 */
@@ -413,6 +421,8 @@ GridManager.prototype.retreiveAndParseGrid = function (gridNumber, callback) {
         parseGrid(callback, Buffer.concat(bodyChunks).toString());
         
         console.info('\n\t[GRIDMANAGER] Parsing Done. Now play ' + _gridInfos.provider + ' ' +  _gridInfos.id + ' - Level ' +  _gridInfos.level);
+
+        callback(_grid);
       });
 
     }
@@ -424,6 +434,24 @@ GridManager.prototype.retreiveAndParseGrid = function (gridNumber, callback) {
     onGetGridError(callback, e.message);
   });
 
+};
+
+/*
+* reset the current and load a new one
+* @param {Int}      gridNumber    The grid number ID to request to the provider
+* @param {Function} callback      The callback to raise either on success or error !
+*/
+GridManager.prototype.resetGrid = function (gridNumber, callback) {
+  
+  // Reset important values
+  _grid = _wordsPoints = _theme = null;
+  _nbLetters = _lastSearchCase = _maxPoints = 0;
+  _gridInfos.id = 0;
+  _gridInfos.level = 0;
+  _gridInfos.nbWords = 0;
+
+  // Load the grid
+  this.retreiveAndParseGrid(gridNumber, callback);
 };
 
 module.exports = GridManager;

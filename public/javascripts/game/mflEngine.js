@@ -131,6 +131,8 @@ require(['../lib/text!../../conf.json', 'UITools', 'grid', 'chat', 'score'], fun
 
     // Bind grid event, meaning the game is about to start !
     _socket.on('grid_event', onStartGame);
+    // Bind also grid reset, to play more than one game :p
+    _socket.on('grid_reset', resetGame);
 
     // Send player infos to the server
     _socket.emit('userIsReady', { 'nick': nick, 'monster': monster } );
@@ -191,8 +193,15 @@ require(['../lib/text!../../conf.json', 'UITools', 'grid', 'chat', 'score'], fun
     });
   }
 
+  function resetGame() {
+    _ui.resetGridInformations();
+    _scoreManager.resetScores();
+    if (_gridManager)
+      _gridManager.resetGrid();
+  }
+
   function setPlayerColor(color) {
-    var color = getRGBComponents(color),
+    var color = _ui.getRGBComponents(color),
         css = '.focusCell { -moz-box-shadow: inset 0px 0px 30px 4px rgba(' + color + ',0.2);box-shadow: inset 0px 0px 30px 4px rgba(' + color + ',0.2);border-color: rgba(' + color + ',0.4); } .goRight:before, .goDown:before { color: rgb(' + color + '); }',
         style = document.createElement('style');
 
@@ -204,26 +213,6 @@ require(['../lib/text!../../conf.json', 'UITools', 'grid', 'chat', 'score'], fun
       style.appendChild(document.createTextNode(css));
 
     document.head.appendChild(style);
-  }
-
-  function getRGBComponents(color) {
-    var bigInt,
-        r = 231,  // Default color
-        g = 166,  // Default color
-        b = 26;   // Default color
-
-    // If the color provided by the browser is in hex format (#123456)
-    if (color[0] == '#') {
-      bigInt = parseInt(color.substr(1), 16)
-      r = (bigInt >> 16) & 255;
-      g = (bigInt >> 8) & 255;
-      b = bigInt & 255;
-    }
-    // If the color is already in rgb format
-    else if (color[0] == 'r')
-      return (color.substr(4).split(')')[0]);
-
-    return (r + ',' + g + ',' + b);
   }
 
 

@@ -306,6 +306,13 @@ define(['cursor'], function (Cursor) {
     }, 100);
     
   };
+
+  /*
+  * Reset the grid to prepare a new game
+  */
+  Grid.prototype.resetGrid = function () {
+    var container = document.getElementById('gs-grid-container').innerHTML = '';
+  };
   
 
   return (Grid);
