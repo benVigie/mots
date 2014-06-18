@@ -52,11 +52,11 @@ function resetGame(gridID) {
       _io.sockets.emit('grid_reset');
     }
   });
-
-
 }
 
 function playerLog (socket, nick, monsterId) {
+  var gridInfos = _gridManager.getGridInfos();
+
   // Retreive PlayerInstance
   socket.get('PlayerInstance', function (error, player) {
 
@@ -77,6 +77,9 @@ function playerLog (socket, nick, monsterId) {
 
       // Notify everyone about the new client
       sendChatMessage( nick + ' a rejoint la partie !<br/>' + _playersManager.getNumberOfPlayers() + ' joueurs connectés', undefined, undefined, _playersManager.getPlayerList());
+
+      // Send grid informations to the player
+      sendPlayerMessage(socket, 'Grille actuelle: ' + gridInfos.provider + ' ' + gridInfos.id + ' (Niveau ' + gridInfos.level + ')');
     }
   });
 }
@@ -177,6 +180,10 @@ function sendChatMessage(Message, sender, color, playerList) {
   }
 
   _io.sockets.emit('chat', { message: Message, from: sender, color: color, players: playerList } );
+}
+
+function sendPlayerMessage(socket, Message) {
+  socket.emit('chat', { message: Message, from: 'server', color: SERVER_CHAT_COLOR });
 }
 
 
