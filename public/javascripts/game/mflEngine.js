@@ -137,9 +137,21 @@ require(['../lib/text!../../conf.json', 'UITools', 'grid', 'chat', 'score'], fun
     // Send player infos to the server
     _socket.emit('userIsReady', { 'nick': nick, 'monster': monster } );
     
+    // Bind score update
+    _socket.on('score_update', _scoreManager.RefreshScore);
+  
+    // Finally bind game over event
+    _socket.on('game_over', function (winner) {
+      _ui.displayGameOver(winner);
+      _chat.congrats(winner);
+    });
+
     // Show game screen and change state
     _ui.ChangeGameScreen(enumPanels.Game, true);
     _gameState = enumState.Waiting;
+
+    // Bind command buttons
+    _ui.bindServerCommandButtons(_socket);
 
     // Set player's color
     setPlayerColor(monsterNode.style.borderColor);
@@ -182,15 +194,6 @@ require(['../lib/text!../../conf.json', 'UITools', 'grid', 'chat', 'score'], fun
 
     // Bind get word event
     _socket.on('word_founded', _gridManager.RevealWord);
-
-    // Bind score update
-    _socket.on('score_update', _scoreManager.RefreshScore);
-  
-    // Finally bind game over event
-    _socket.on('game_over', function (winner) {
-      _ui.displayGameOver(winner);
-      _chat.congrats(winner);
-    });
   }
 
   function resetGame() {
