@@ -25,7 +25,9 @@ define(function () {
 
       // If the user press enter, send message
       if (event.keyCode == 13) {
-        _socket.emit('chat', _writeNode.value);
+        if (_writeNode.value != '')
+          _socket.emit('chat', _writeNode.value);
+        
         // Then refresh textarea node
         _writeNode.value = '';
         return (false);

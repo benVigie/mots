@@ -5,6 +5,7 @@ define(function () {
 
   var _infPanlTimer = null; // Use for info panel timer reference
       _gameTimer    = null; // Game timer
+      _socket       = null; // Socket use to send messages to the server
 
   function UITools() {
     // Do nothing on init
@@ -40,6 +41,20 @@ define(function () {
     str = (m < 10) ? ('0' + m.toString() + ':') : (m.toString() + ':');
     str += (s < 10) ? ('0' + s.toString()) : s.toString();
     return (str);
+  }
+
+  function changeGrid() {
+    var texteareaNode = document.getElementById('gsc-write'),
+        gridNumber = parseInt(texteareaNode.value);
+
+    // If the grid number retreived is not valid, display an informative tooltip
+    if (isNaN(gridNumber))
+      new UITools().InfoTooltip(true, 'Pour changer de grille, saisissez <strong>le numéro voulu</strong> dans le chat', 2000);
+    // Else send the change grid command
+    else {
+      _socket.emit('chat', '!grid '+ gridNumber.toString());
+      texteareaNode.value = '';
+    }
   }
 
 
@@ -206,6 +221,17 @@ define(function () {
       return (color.substr(4).split(')')[0]);
 
     return (r + ',' + g + ',' + b);
+  };
+
+  /*
+  * Bind server command buttons.
+  * @param {Object}   socket  The color as a string
+  */
+  UITools.prototype.bindServerCommandButtons = function(socket) {
+    _socket = socket;
+
+    document.getElementById('gsc-command-start').addEventListener('click', function () { _socket.emit('chat', '!start'); }, false);
+    document.getElementById('gsc-command-grid').addEventListener('click', changeGrid, false);;
   };
 
 
