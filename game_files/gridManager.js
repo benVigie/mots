@@ -41,7 +41,7 @@ function getNextCase(grid, kindMove, caseType, lastCase) {
   // Get the last case position
   if (lastCase) {
     iterator = lastCase.pos;
-  
+
     // Move iterator to the next case according the kind of search we want
     if ((kindMove == enumCaseParser.InARow) || (kindMove == enumCaseParser.Horizontal))
       iterator++;
@@ -111,7 +111,7 @@ function parseGrid(callback, serverText) {
   // Then parse each line
   length = stArray.length;
   for (i = 0; i < length; i++) {
-    
+
     // Get key / value for this line
     info = stArray[i].split('=');
 
@@ -170,7 +170,7 @@ function parseGrid(callback, serverText) {
         case 'legende':
           _gridInfos.level = parseInt(info[1][info[1].length - 1], 10);
           break;
-        
+
         default:
           console.info('\t[GRIDMANAGER] Unknow grid tag [' + info[0] + ']');
       }
@@ -191,8 +191,8 @@ function placeArrows(grid) {
   // Check each cell to find a description frame
   for (i = 0; i < gridSize; i++) {
     if (grid.cases[i].type == enums.CaseType.Description) {
-      
-      // According the type of description, set the right arrow to the 
+
+      // According the type of description, set the right arrow to the
       switch (grid.cases[i].value) {
         case 'a':
           grid.cases[i].arrow[0] = enumArrow.Right;
@@ -253,9 +253,10 @@ function getGridAddress(commandArgv) {
       today = new Date();
       dayDiff = Math.abs(today.getTime() - gridDefaultDay.getTime());
       dayDiff = Math.floor(dayDiff / (1000 * 3600 * 24));
-      gridNumber = config.PROVIDER_DEFAULT_GRID + dayDiff;
+      // gridNumber = config.PROVIDER_DEFAULT_GRID + dayDiff;
+      gridNumber = config.PROVIDER_DEFAULT_GRID;
       break;
-    
+
     // Retreive the default grid
     case -1:
       console.info('\n\t[GRIDMANAGER] Load default grid');
@@ -296,7 +297,7 @@ GridManager.prototype.checkPlayerWord = function (wordObj) {
     // If the letter doesn't match the grid, return false
     if (wordObj.word[i] != _grid.cases[index].value)
       return (-1);
-    
+
     if (_grid.cases[index].available == true)
       points++;
 
@@ -358,7 +359,7 @@ GridManager.prototype.getNbRemainingWords = function () {
 }
 
 /*
-* Retreive the accomplishment rate for 
+* Retreive the accomplishment rate for
 * @return {Int}    The number of words still available
 */
 GridManager.prototype.getAccomplishmentRate = function (playerPoints, nbPlayers) {
@@ -399,11 +400,11 @@ GridManager.prototype.getAccomplishmentRate = function (playerPoints, nbPlayers)
 GridManager.prototype.retreiveAndParseGrid = function (gridNumber, callback) {
   var gridAddr = getGridAddress(gridNumber),    // Retreive the grid URL, build from provider infos and ID requested
       req = http.get(gridAddr, function (res) { // Launch the request !
-    
+
     var bodyChunks = [];
 
     console.info('\n\t[GRIDMANAGER] Try to load ' + gridAddr);
-    
+
     // If an error occurs, raise failure callback
     if (res.statusCode !== 200) {
       onGetGridError(callback, 'Wrong statusCode ' + res.statusCode);
@@ -419,7 +420,7 @@ GridManager.prototype.retreiveAndParseGrid = function (gridNumber, callback) {
 
         // Parse server response to extract a grid object
         parseGrid(callback, Buffer.concat(bodyChunks).toString());
-        
+
         console.info('\n\t[GRIDMANAGER] Parsing Done. Now play ' + _gridInfos.provider + ' ' +  _gridInfos.id + ' - Level ' +  _gridInfos.level);
 
         callback(_grid);
@@ -442,7 +443,7 @@ GridManager.prototype.retreiveAndParseGrid = function (gridNumber, callback) {
 * @param {Function} callback      The callback to raise either on success or error !
 */
 GridManager.prototype.resetGrid = function (gridNumber, callback) {
-  
+
   // Reset important values
   _grid = _wordsPoints = _theme = null;
   _nbLetters = _lastSearchCase = _maxPoints = 0;
