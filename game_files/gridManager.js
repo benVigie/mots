@@ -1,4 +1,4 @@
-var http    = require('http'),
+var https    = require('https'),
     config  = require('../conf.json').GRID_PROVIDER,
     enums   = require('./enums'),
     Case    = require('./case');
@@ -141,6 +141,9 @@ function parseGrid(callback, serverText) {
       insertDescription(grid, info[1]);
     }
     // If this line set a dotted frame, apply the effect to the right frame
+    else if (info[0].indexOf('pointillev') > -1 || info[0].indexOf('pointilleh') > -1) {
+      grid.cases[(parseInt(info[0].substr(10), 10)) - 1].dashed = info[1];
+    }
     else if (info[0].indexOf('pointille') > -1) {
       grid.cases[(parseInt(info[0].substr(9), 10)) - 1].dashed = info[1];
     }
@@ -399,14 +402,14 @@ GridManager.prototype.getAccomplishmentRate = function (playerPoints, nbPlayers)
 */
 GridManager.prototype.retreiveAndParseGrid = function (gridNumber, callback) {
   var gridAddr = getGridAddress(gridNumber),    // Retreive the grid URL, build from provider infos and ID requested
-      req = http.get(gridAddr, function (res) { // Launch the request !
+      req = https.get(gridAddr, function (res) { // Launch the request !
 
     var bodyChunks = [];
 
     console.info('\n\t[GRIDMANAGER] Try to load ' + gridAddr);
 
     // If an error occurs, raise failure callback
-    if (res.statusCode !== 200) {
+    if (res.statusCode !== 200 && res.statusCode !== 302) {
       onGetGridError(callback, 'Wrong statusCode ' + res.statusCode);
     }
     else {

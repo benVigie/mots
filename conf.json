@@ -6,7 +6,7 @@
 
   "GRID_PROVIDER": {
     "PROVIDER_NAME": "Metro",
-    "PROVIDER_ADDR": "http://www.rci-jeux.com/ope/metro/mfleches/data/mfl",
+    "PROVIDER_ADDR": "https://www.rci-jeux.com/ope/metro/mfleches/data/mfl",
     "PROVIDER_EXTENSION": ".mfl",
     "PROVIDER_DEFAULT_GRID": 1215,
     "PROVIDER_DEFAULT_GRID_DATE": 1400277600000
