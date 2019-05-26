@@ -5,8 +5,10 @@ var express = require('express'),
     routes  = require('./routes'),
     http  = require('http'),
     path  = require('path'),
+    os = require('os'),
+    prompts = require('prompts'),
     app   = express(),
-    config  = require('./conf.json'), 
+    config  = require('./conf.json'),
     mfl   = require('./game_files/motsFleches'),
 
     _gridNumber = 0;
@@ -32,12 +34,11 @@ if ('development' == app.get('env')) {
 
 app.get('/', routes.index);
 app.get('/conf.json', function(req, res) {
-    res.sendfile('conf.json');
+    res.json({ SOCKET_ADDR: config.SOCKET_ADDR, SOCKET_PORT: config.SOCKET_PORT });
 });
 
-http.createServer(app).listen(app.get('port'), function(){
-  console.log('Express server listening on port ' + app.get('port'));
-});
+// Start server
+http.createServer(app).listen(app.get('port'), onServerReady);
 
 // Retreive command line arguments
 if (process.argv[2]) {
@@ -49,6 +50,47 @@ if (process.argv[2]) {
     _gridNumber = process.argv[2];
 }
 
-// Start server with desired grid in parameter. 
-// -1 to retreive the day grid, 0 for the default one or any number for a special one
-mfl.startMflServer(_gridNumber);
+/** Call when the express server has started */
+async function onServerReady() {
+  console.log('Express server listening on port ' + app.get('port'));
+
+  var addresses = getLocalIpAddresses();
+
+  if (addresses.length > 1) {
+    var response = await prompts({
+      type: 'select',
+      name: 'value',
+      message: 'Choose the IP address to use',
+      choices: addresses,
+    });
+
+    // Update socket address with the choosen one
+    config.SOCKET_ADDR = `http://${addresses[response.value]}`;
+  }
+  else {
+    config.SOCKET_ADDR = `http://${addresses[0]}`;
+  }
+
+  console.log(`\n\n\tWaiting for players at ${config.SOCKET_ADDR}:${config.SERVER_PORT}\n\n`);
+
+  // Load desired grid in parameter.
+  // -1 to retreive the day grid, 0 for the default one or any number for a special one
+  mfl.startMflServer(_gridNumber);
+}
+
+/** Get local ip addresses */
+function getLocalIpAddresses() {
+  var ifaces = os.networkInterfaces();
+  var addresses = [];
+
+  Object.keys(ifaces).map(function (ifname) {
+    var alias = 0;
+
+    return ifaces[ifname].map(function (iface) {
+      if (iface.family !== 'IPv4' || iface.internal !== false) return;
+      addresses.push(iface.address);
+    });
+  });
+
+  return addresses;
+}
