@@ -479,8 +479,8 @@ html, body {
   line-height: 21px;
 }
 
-.dash1 { border-bottom: 1px dashed rgba(127, 140, 141, 0.2); }
-.dash2 { border-right: 1px dashed rgba(127, 140, 141, 0.2); }
+.dash1 { border-bottom: 1.5px dashed rgba(127, 140, 141, 0.7); }
+.dash2 { border-right: 1.5px dashed rgba(127, 140, 141, 0.7); }
 
 .empty {
   border: none;

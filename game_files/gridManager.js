@@ -138,11 +138,11 @@ function parseGrid(callback, serverText) {
 
   // Add dotted
   for (var i in gamedata.spountzV){
-    var nb = (gamedata.spountzV[i][0]-1)*grid.nbColumns + gamedata.spountzV[i][1];
+    var nb = gamedata.spountzV[i][0] + (gamedata.spountzV[i][1]-1)*grid.nbColumns;
     grid.cases[nb - 1].dashed = 2;
   }
-  for (var i in gamedata.spountzV){
-    var nb = (gamedata.spountzV[i][0]-1)*grid.nbColumns + gamedata.spountzV[i][1];
+  for (var i in gamedata.spountzH){
+    var nb = gamedata.spountzH[i][0] + (gamedata.spountzH[i][1]-1)*grid.nbColumns;
     grid.cases[nb - 1].dashed = 1;
   }
   /*
