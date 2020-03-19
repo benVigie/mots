@@ -39,7 +39,7 @@ require(['../lib/text!../../conf.json', 'UITools', 'grid', 'chat', 'score'], fun
     _scoreManager = new Score();
 
     // document.getElementById('gs-loader-text').innerHTML = 'Connecting to the server...';
-    _socket = io.connect((Conf.SOCKET_ADDR + ':' + Conf.SOCKET_PORT), { reconnect: false });
+    _socket = io.connect(location.protocol + "//" + location.hostname, { reconnect: false });
     _socket.on('connect', function() {
       
       console.log('Connection established :)');

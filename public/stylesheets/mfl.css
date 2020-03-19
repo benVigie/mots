@@ -339,7 +339,7 @@ html, body {
   width: -webkit-calc(100% - 1200px);
   width: -moz-calc(100% - 1200px);
   width: calc(100% - 1200px);
-  height: 100%;
+  height: 90%;
 
   background-image: url('../images/green-bg.png');
 }
@@ -369,7 +369,17 @@ html, body {
     width: -webkit-calc(100% - 900px);
     width: -moz-calc(100% - 900px);
     width: calc(100% - 900px);
-    height: 70%;
+    height: 60%;
+  }
+  #ig-infos {
+    position: relative;
+
+    float: left;
+    
+    width: -webkit-calc(100% - 900px) !important;
+    width: -moz-calc(100% - 900px) !important;
+    width: calc(100% - 900px) !important;
+    height: 10%;
   }
 }
 
@@ -474,6 +484,7 @@ html, body {
 
 .empty {
   border: none;
+  background-color: gray;
 }
 
 .focusCell {
@@ -634,14 +645,21 @@ html, body {
 |                       |
 \*=====================*/
 #ig-infos {
-  position: absolute;
 
   color: #ecf0f1;
   text-shadow: 2px 2px 5px #2c3e50;
   text-align: center;
 
-  background-image: url('../images/green-bg.png');
   overflow: hidden;
+
+  float: left;
+
+  width: -webkit-calc(100% - 1200px);
+  width: -moz-calc(100% - 1200px);
+  width: calc(100% - 1200px);
+  height: 10%;
+
+  background-image: url('../images/green-bg.png');
 }
 #ig-infos > header {
   position: relative;

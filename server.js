@@ -38,7 +38,9 @@ app.get('/conf.json', function(req, res) {
 });
 
 // Start server
-http.createServer(app).listen(app.get('port'), onServerReady);
+var server = http.createServer(app);
+
+
 
 // Retreive command line arguments
 if (process.argv[2]) {
@@ -50,32 +52,19 @@ if (process.argv[2]) {
     _gridNumber = process.argv[2];
 }
 
+mfl.startMflServer(server, _gridNumber);
+
+server.listen(app.get('port'), onServerReady);
+
 /** Call when the express server has started */
 async function onServerReady() {
   console.log('Express server listening on port ' + app.get('port'));
-
-  var addresses = getLocalIpAddresses();
-
-  if (addresses.length > 1) {
-    var response = await prompts({
-      type: 'select',
-      name: 'value',
-      message: 'Choose the IP address to use',
-      choices: addresses,
-    });
-
-    // Update socket address with the choosen one
-    config.SOCKET_ADDR = `http://${addresses[response.value]}`;
-  }
-  else {
-    config.SOCKET_ADDR = `http://${addresses[0]}`;
-  }
 
   console.log(`\n\n\tWaiting for players at ${config.SOCKET_ADDR}:${config.SERVER_PORT}\n\n`);
 
   // Load desired grid in parameter.
   // -1 to retreive the day grid, 0 for the default one or any number for a special one
-  mfl.startMflServer(_gridNumber);
+  
 }
 
 /** Get local ip addresses */
