@@ -104,8 +104,50 @@ function parseGrid(callback, serverText) {
         nbWords: 0,
         cases: []
       };
+  
+  eval(serverText); // Parse and evaluate js, generate variable gamedata
+  
+  grid.level = gamedata.force;
+  _gridInfos.level = gamedata.force;
 
-  // Initial sort. Isolate each "line" by spliting on '&' char
+  grid.nbWords = gamedata.definitions.length;
+  _gridInfos.nbWords = gamedata.definitions.length;
+
+  grid.nbLines = gamedata.nbcaseshauteur;
+  grid.nbColumns = gamedata.nbcaseslargeur;
+
+  // Load letters
+  for (i in gamedata.grille){
+    for (j in gamedata.grille[i]){
+      type = getCaseType(gamedata.grille[i][j]);
+      if (type == enums.CaseType.Letter) {
+        grid.cases.push(new Case.LetterCase(currentCase++, gamedata.grille[i][j]));
+        _nbLetters++;
+      } else if (type == enums.CaseType.Description) {
+        grid.cases.push(new Case.DescriptionCase(currentCase++, gamedata.grille[i][j]));
+      } else {
+        grid.cases.push(new Case.EmptyCase(currentCase++));
+      }
+    }
+  }
+
+  // Add descriptions
+  for (var i in gamedata.definitions){
+    insertDescription(grid, gamedata.definitions[i].join('\n'));
+  }
+
+  // Add dotted
+  for (var i in gamedata.spountzV){
+    var nb = gamedata.spountzV[i][0] + (gamedata.spountzV[i][1]-1)*grid.nbColumns;
+    grid.cases[nb - 1].dashed = 2;
+  }
+  for (var i in gamedata.spountzH){
+    var nb = gamedata.spountzH[i][0] + (gamedata.spountzH[i][1]-1)*grid.nbColumns;
+    grid.cases[nb - 1].dashed = 1;
+  }
+  /*
+  /////////////////////OLD////////////////////////////////////
+  // Initial sort. Isolate each "line" by spliting on '\n' char
   stArray = serverText.split('&');
 
   // Then parse each line
@@ -179,7 +221,7 @@ function parseGrid(callback, serverText) {
       }
     }
   };
-
+  */
   // Once the entire grid is retreived, place arrows
   placeArrows(grid);
 
@@ -219,6 +261,7 @@ function placeArrows(grid) {
         case 'k':
         case 'l':
         case 'm':
+        case 'n':
           grid.cases[i].arrow[0] = enumArrow.RightBottom;
           grid.cases[i].arrow[1] = enumArrow.Bottom;
           break;
@@ -244,26 +287,15 @@ function placeArrows(grid) {
 function getGridAddress(commandArgv) {
   var gridNumber,
       today,
-      gridDefaultDay,
       dayDiff;
 
   switch (commandArgv) {
     // No number given, load day grid
     case 0:
-      console.info('\n\t[GRIDMANAGER] Load day grid');
-      // Compare the default date with today. Add this difference to the default grid number. Assume that we have one grid per day !
-      gridDefaultDay = new Date(config.PROVIDER_DEFAULT_GRID_DATE);
-      today = new Date();
-      dayDiff = Math.abs(today.getTime() - gridDefaultDay.getTime());
-      dayDiff = Math.floor(dayDiff / (1000 * 3600 * 24));
-      // gridNumber = config.PROVIDER_DEFAULT_GRID + dayDiff;
-      gridNumber = config.PROVIDER_DEFAULT_GRID;
-      break;
-
-    // Retreive the default grid
     case -1:
-      console.info('\n\t[GRIDMANAGER] Load default grid');
-      gridNumber = config.PROVIDER_DEFAULT_GRID;
+      console.info('\n\t[GRIDMANAGER] Load day grid');
+      today = new Date();
+      gridNumber = ("0"+today.getDate()).substr(-2) + ("0"+(today.getMonth()+1)).substr(-2) + (""+today.getFullYear()).substr(-2)
       break;
 
     // Load the specified grid

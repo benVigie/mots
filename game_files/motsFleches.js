@@ -170,6 +170,12 @@ function checkServerCommand(message) {
     return (true);
   }
 
+  // Check the change grid command
+  if (message.indexOf('!stop') >= 0) {
+    resetGame(0);
+    return (true);
+  }
+
   return (false);
 }
 
@@ -190,9 +196,9 @@ function sendPlayerMessage(socket, Message) {
 /**
  *  Start mfl server.
  */
-exports.startMflServer = function (desiredGrid) {
+exports.startMflServer = function (server, desiredGrid) {
   // Instanciiate io module with proper parameters
-  _io = require('socket.io').listen(config.SOCKET_PORT);
+  _io = require('socket.io').listen(server);
   _io.configure(function(){
     _io.set('log level', 2);
   });

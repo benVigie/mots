@@ -74,6 +74,11 @@ define(['cursor'], function (Cursor) {
         fontSize = Math.round(lineHeight / 1.5);
         break;
 
+      case 5:
+        lineHeight = Math.floor(size / info.nbLines);
+        fontSize = Math.round(lineHeight / 1.2);
+        break;
+
       default: 
         console.log('[ERROR][grid.js] Don\'t know how to display ' + info.nbLines + ' lines frame !!!');
     }
@@ -274,7 +279,7 @@ define(['cursor'], function (Cursor) {
         line, col,
         nbFrames = _grid.cases.length,
         i;
-
+    console.log(_grid)
     // First we have to retreive the min size to display the grid
     limit = (container.offsetWidth < container.offsetHeight) ? container.offsetWidth : container.offsetHeight;
     // console.log('Plus petit cote: ' + limit);
@@ -287,7 +292,7 @@ define(['cursor'], function (Cursor) {
     // For each frame
     for (i = 0; i < nbFrames; i++) {
       // Get line and col
-      line = Math.floor(i / _grid.nbLines);
+      line = Math.floor(i / _grid.nbColumns);
       col = i % _grid.nbColumns;
 
       // Insert frame

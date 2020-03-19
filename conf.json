@@ -1,14 +1,10 @@
 {
   "SERVER_PORT":  2121,
 
-  "SOCKET_ADDR":  "http://127.0.0.1",
-  "SOCKET_PORT":  1337,
-
   "GRID_PROVIDER": {
-    "PROVIDER_NAME": "Metro",
-    "PROVIDER_ADDR": "https://www.rci-jeux.com/ope/metro/mfleches/data/mfl",
-    "PROVIDER_EXTENSION": ".mfl",
-    "PROVIDER_DEFAULT_GRID": 1215,
-    "PROVIDER_DEFAULT_GRID_DATE": 1400277600000
+    "PROVIDER_NAME": "20 Minutes",
+    "PROVIDER_ADDR": "https://rcijeux.fr/drupal_game/20minutes/grids/",
+    "PROVIDER_EXTENSION": ".mfj",
+    "PROVIDER_LIST_GAMES": "https://rcijeux.fr/drupal_game/20minutes/menu/js/jeux_mfleches.js"
   }
 }

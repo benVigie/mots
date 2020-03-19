@@ -12,27 +12,6 @@ define(function () {
   }
 
 
-  function injectInGameInfoPanel() {
-    var emptyNodes = document.querySelectorAll('.empty'),
-        square = {
-          x: 0,
-          y: 0,
-          width: 0,
-          height: 0,
-        };
-
-    // Find an available space within empty spaces (fuck the ads !!!)
-    if (emptyNodes) {
-      square.x = emptyNodes[0].offsetLeft;
-      square.y = emptyNodes[0].offsetTop;
-      square.width = emptyNodes[emptyNodes.length - 1].offsetLeft + emptyNodes[emptyNodes.length - 1].offsetWidth - square.x;
-      square.height = emptyNodes[emptyNodes.length - 1].offsetTop + emptyNodes[emptyNodes.length - 1].offsetHeight - square.y;
-
-      // Now put the info panel on the grid
-      document.getElementById('gs-grid-container').innerHTML += '<div id="ig-infos" style="left: ' + square.x + 'px; top: ' + square.y + 'px; width: ' + square.width + 'px; height: ' + square.height + 'px;"><header></header><time></time><footer></footer></div>';
-    }
-  }
-
   function formatTime(ellapsedTime) {
     var m = Math.floor(ellapsedTime / 60),
         s = ellapsedTime % 60,
@@ -155,7 +134,7 @@ define(function () {
         time = 0;
 
     // First inject the game info panel
-    injectInGameInfoPanel();
+    //injectInGameInfoPanel();
 
     // Retreive time node and inject timer
     timeNode = document.querySelector('#ig-infos > time');
