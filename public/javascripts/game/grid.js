@@ -231,8 +231,10 @@ define(['cursor'], function (Cursor) {
     }
   }
 
-  Grid.prototype.RevealLetter = function (letter) {
-    revealCase(letter.pos, letter.value, 'pinkg', letter.type, 0);
+  Grid.prototype.RevealLetters = function (letters) {
+    for (const letter of letters) {
+      revealCase(letter.pos, letter.value, 'indianred', letter.type, 0);
+    }
   };
 
   /*
