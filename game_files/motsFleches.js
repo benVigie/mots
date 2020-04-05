@@ -45,11 +45,11 @@ function sendHint() {
     return;
   }
 
-  let word = _gridManager.findWord(caseHint.pos, 0);
+  let word = _gridManager.findWord(caseHint.pos, enums.AxisType.Horizontal);
   if (word) {
     _gridManager.decreaseRemainingWords();
   }
-  word = _gridManager.findWord(caseHint.pos, 1);
+  word = _gridManager.findWord(caseHint.pos, enums.AxisType.Vertical);
   if (word) {
     _gridManager.decreaseRemainingWords();
   }
