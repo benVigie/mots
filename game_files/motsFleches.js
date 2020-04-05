@@ -7,13 +7,16 @@ var enums           = require('./enums'),
 var MAX_PLAYERS   = 4;
 var SERVER_CHAT_COLOR = '#c0392b';
 var TIME_BEFORE_START = 5;
+var FIRST_HINT_TIMEOUT = 120;
+var NEXT_HINT_TIMEOUT = 30;
 
 // Parameters
 var _playersManager,
     _gridManager,
     _io,
     _gameState,
-    _lastWordFoudTimestamp;
+    _lastWordFoudTimestamp,
+    _hintTimer;
 
 function startGame() {
   var Grid  = _gridManager.getGrid(),
@@ -24,8 +27,42 @@ function startGame() {
   // Change game state
   _gameState = enums.ServerState.OnGame;
 
+  // Lancement du timer pour les indices
+  _hintTimer = setTimeout(sendHint, FIRST_HINT_TIMEOUT * 1000);
+
   // Send grid to clients
   _io.sockets.emit('grid_event', { grid: Grid, timer: delay } );
+}
+
+function sendHint() {
+  if (_gameState !== enums.ServerState.OnGame) {
+    return;
+  }
+
+  const caseHint = _gridManager.getHint();
+
+  if (!caseHint) {
+    return;
+  }
+
+  let word = _gridManager.findWord(caseHint.pos, 0);
+  if (word) {
+    _gridManager.decreaseRemainingWords();
+  }
+  word = _gridManager.findWord(caseHint.pos, 1);
+  if (word) {
+    _gridManager.decreaseRemainingWords();
+  }
+
+  if (_gridManager.getNbRemainingWords() <= 0) {
+    console.log('[SERVER] Game over ! Sending player\'s notification...');
+    _io.sockets.emit('game_over', _playersManager.getWinner().getPlayerObject());
+  }
+
+  caseHint.available = false;
+  _io.sockets.emit('hint', caseHint);
+
+  _hintTimer = setTimeout(sendHint, NEXT_HINT_TIMEOUT * 1000);
 }
 
 function resetGame(gridID) {
@@ -127,6 +164,10 @@ function checkWord(player, wordObj) {
 
   // If the players has some points, it's mean it's the right word ! Notify players about it
   if (points >= 0) {
+    if (_hintTimer) {
+      clearTimeout(_hintTimer);
+      _hintTimer = setTimeout(sendHint, FIRST_HINT_TIMEOUT * 1000);
+    }
 
     // Notify all clients about this word
     wordObj.color = player.getColor();

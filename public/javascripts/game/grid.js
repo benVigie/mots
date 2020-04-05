@@ -231,7 +231,10 @@ define(['cursor'], function (Cursor) {
     }
   }
 
-  
+  Grid.prototype.RevealLetter = function (letter) {
+    revealCase(letter.pos, letter.value, 'pinkg', letter.type, 0);
+  };
+
   /*
   * Function called when a players has found a word. Display it on the grid in the right color
   */
@@ -245,23 +248,23 @@ define(['cursor'], function (Cursor) {
 
     for (i = 0; i < size; i++) {
       // If this letter is a just found
-      if (_grid.cases[index].available == true) {
-        // Update grid object
-        _grid.cases[index].letter = wordObj.word[i];
-        _grid.cases[index].available = false;
-
-        // Display it
-        node = document.querySelector('.frame' + index);
-        node.style.cssText += '-webkit-transition-delay: ' + animationDelay + 'ms; transition-delay: ' + animationDelay + 'ms; color: ' + wordObj.color;
-        node.classList.add('reveal' + wordObj.axis);
-        node.innerHTML = _grid.cases[index].letter;
-        
-        animationDelay += REVEAL_WORD_ANIM_DELAY;
-      }
-
+      revealCase(index, wordObj.word[i], wordObj.color, wordObj.axis, animationDelay);
       index += jump;
-    };
+      animationDelay += REVEAL_WORD_ANIM_DELAY;
+    }
   };
+
+  function revealCase(index, letter, color, axis, animationDelay) {
+    // Update grid object
+    _grid.cases[index].letter = letter;
+    _grid.cases[index].available = false;
+
+    // Display it
+    node = document.querySelector('.frame' + index);
+    node.style.cssText += '-webkit-transition-delay: ' + animationDelay + 'ms; transition-delay: ' + animationDelay + 'ms; color: ' + color;
+    node.classList.add('reveal' + axis);
+    node.innerHTML = _grid.cases[index].letter;
+  }
 
 
   /*

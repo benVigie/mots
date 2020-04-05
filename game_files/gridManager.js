@@ -359,7 +359,11 @@ GridManager.prototype.getGridInfos = function () {
 */
 GridManager.prototype.getNbRemainingWords = function () {
   return (_grid.nbWords);
-}
+};
+
+GridManager.prototype.decreaseRemainingWords = function () {
+  _grid.nbWords--;
+};
 
 /*
 * Retreive the accomplishment rate for
@@ -456,6 +460,72 @@ GridManager.prototype.resetGrid = function (gridNumber, callback) {
 
   // Load the grid
   this.retreiveAndParseGrid(gridNumber, callback);
+};
+
+GridManager.prototype.getHint = function () {
+  const availableCases = _grid.cases.filter(oneCase => oneCase instanceof Case.LetterCase && oneCase.available === true);
+  const caseIndex = Math.floor(Math.random() * Math.floor(availableCases.length));
+
+  return availableCases[caseIndex];
+};
+
+function getFrameAxisNumber(index, axis) {
+  if (axis == enums.AxisType.Horizontal) {
+    return (Math.floor(index / _grid.nbColumns));
+  }
+  else {
+    return (index % _grid.nbColumns);
+  }
+}
+
+/*
+*   This function will search an entire word on a specified axis from initialPos.
+*   If the function cannot buil a complete word (letter is missing), return null
+*   @param {Int}  initialPos  The start position in grid
+*   @param {Enum} axis        Axis of the research. Must be AxisType.Horizontal or AxisType.Vertical
+*   @return {Object}  An object representing the word founded or null if we cannot retreive a complete word
+*/
+GridManager.prototype.findWord = function (initialPos, axis) {
+  var word    = _grid.cases[initialPos].value,
+      jump    = (axis == enums.AxisType.Horizontal) ? 1 : _grid.nbColumns, // The axis will define how many frames we have to jump to retreive the next letter
+      i       = initialPos - jump,
+      wordAxe = getFrameAxisNumber(initialPos, axis),
+      firstLetterIndex  = 0;
+
+  // While we have a letter before the current position, continue to compute word
+  while ((_grid.cases[i]) && (getFrameAxisNumber(i, axis) == wordAxe) && (_grid.cases[i] instanceof Case.LetterCase)) {
+    // Adding letter and continue
+    if (_grid.cases[i].value != null && _grid.cases[i].available === false)
+      word = _grid.cases[i].value + word;
+    // Else there is a hole in this word, exit
+    else
+      return (null);
+
+    // Go to the previous letter
+    i -= jump;
+  }
+  // Save first letter pos
+  firstLetterIndex = i + jump;
+
+  // Now finish the word in the other direction
+  i = initialPos + jump;
+  while ((_grid.cases[i]) && (getFrameAxisNumber(i, axis) == wordAxe) && (_grid.cases[i].type instanceof Case.LetterCase)) {
+    // Adding letter and continue
+    if (_grid.cases[i].value != null && _grid.cases[i].available === false)
+      word += _grid.cases[i].value;
+    // Else there is a hole in this word, exit
+    else
+      return (null);
+
+    // Go to the next letter
+    i += jump;
+  }
+
+  // Ignore false detection of 1 letter word
+  if (word.length <= 1)
+    return (null);
+
+  return  ( { 'axis': axis, 'word': word, 'start': firstLetterIndex } );
 };
 
 module.exports = GridManager;

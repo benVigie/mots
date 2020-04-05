@@ -25,7 +25,13 @@ var enumCaseType = {
   Empty: 4
 };
 
+var enumAxisType = {
+  Horizontal: 0,
+  Vertical:   1
+};
+
 exports.PlayerState     = enumPlayerState;
 exports.ServerState     = enumServerState;
 exports.ArrowDirections = enumArrowDirection;
 exports.CaseType        = enumCaseType;
+exports.AxisType        = enumAxisType;
