@@ -7,8 +7,8 @@ var enums           = require('./enums'),
 var MAX_PLAYERS   = 4;
 var SERVER_CHAT_COLOR = '#c0392b';
 var TIME_BEFORE_START = 5;
-var FIRST_HINT_TIMEOUT = 10;
-var NEXT_HINT_TIMEOUT = 5;
+var FIRST_HINT_TIMEOUT = 120;
+var NEXT_HINT_TIMEOUT = 30;
 
 // Parameters
 var _playersManager,
