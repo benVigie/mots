@@ -9,6 +9,6 @@
     "express": "3.4.8",
     "jade": "*",
     "prompts": "^2.1.0",
-    "socket.io": "~0.9"
+    "socket.io": "~2.4"
   }
 }
