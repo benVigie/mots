@@ -6,7 +6,7 @@
     "start": "node server.js"
   },
   "dependencies": {
-    "express": "3.4.8",
+    "express": "4.18.2",
     "jade": "*",
     "prompts": "^2.1.0",
     "socket.io": "~0.9"
